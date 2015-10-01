@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
 
 //bitwise and
 int bit_and(int a, int b)
@@ -24,13 +21,14 @@ int bit_xor(int a, int b)
 //get sign
 int sign(int x)
 {
-    return (x >> 31) | 1;
+    int _x = !x;
+    return  ((x >> 31) | 1) & (((_x & !0) | (0 & x)) + ~0);
 }
 
-//get n byte
+//get nth byte
 int get_byte(x, n)
 {
-    return (x >> ((n + (~0)) << 3)) & 255;
+    return (x >> (n << 3)) & 255;
 }
 
 //get 001001...100
@@ -39,25 +37,52 @@ int third_bit()
     return (36) | (73 << 8) | (73 << 17) | (36 << 24) ;
 }
 
-//check entry x in 2^n 
+//check entry x in [0; 2^n) 
 int fit_bits(int x, int n)
 {
-    return !(x >> n);
+    return !((x ^ (x >> 31)) >> (n + (~0)));
+}
+
+//bitwise shift 
+int logical_shift(int x, int n)
+{
+    return (x >> n);
+}
+
+int conditional(int x, int y, int z)
+{
+    x = !!x;
+    x |= x << 1;
+    x |= x << 2;
+    x |= x << 4;
+    x |= x << 8;
+    x |= x << 15;
+    return (x & y) | (~x & z);
+}
+
+//check x == 2^n
+int is_power2(int x)
+{
+    int _x = (x & (x + ~0));
+    return ((_x & !1) | (1 & !_x)) & !(!x);
 }
 
 int main()
 {
-    srand(time(0));
-    int a = rand();
-    int b = rand();
-    printf("(%d & %d) == %d ; bit_and(%d, %d) == %d\n", a, b, (a & b), a, b, bit_and(a, b));
-    printf("(%d | %d) == %d ; bit_or(%d, %d) == %d\n", a, b, (a | b), a, b, bit_or(a, b));
-    printf("(%d ^ %d) == %d ; bit_xor(%d, %d) == %d\n", a, b, (a ^ b), a, b, bit_xor(a, b));
-    printf("((%d > 0) ? 1 : -1) == %d ; sign(%d) == %d\n", a, ((a > 0) ? 1 : -1), a, sign(a));
-    //printf("\n", a, ((a > 0) ? 1 : -1), a, sign(a));
-    printf("(00100100100100100100100100100100 == %d) == %d\n", third_bit(), (0b00100100100100100100100100100100 == third_bit()));
-    //int q = (int)(pow(2.0, 2.0));
-    //printf("((%d < pow(2, %d)) ? 1 : 0) == %d ; fit_bits(%d, %d) == %d\n", a, b % 32, ( a < q), a, b % 32, fit_bits(a, b % 32));
+    printf("sign(%d) = %d\n", -123, sign(-123));
+    printf("sign(%d) = %d\n", 0, sign(0));
+    printf("sign(%d) = %d\n", 34514, sign(34514));
+    printf("getbyte(%d, %d) = %d\n", 0x12345678, 1, get_byte(0x12345678, 1));
+    printf("third_bit() = %d\n", third_bit()); //TODO: to_bin()
+    printf("fit_bits(%d, %d) = %d\n", 5, 3, fit_bits(5, 3));
+    printf("fit_bits(%d, %d) = %d\n", -4, 3, fit_bits(-4, 3));
+    printf("logical_shift(%d, %d) = %d\n", 0x8765432, 4, logical_shift(0x8765432, 4));
+    printf("conditional(%d, %d, %d) = %d\n", 1, 123, 5, conditional(1, 123, 5));
+    printf("conditional(%d, %d, %d) = %d\n", 0, 4, 5, conditional(0, 4, 5));
+    printf("is_power2(%d) = %d\n", -1, is_power2(-1));
+    printf("is_power2(%d) = %d\n", 0, is_power2(0));
+    printf("is_power2(%d) = %d\n", 1, is_power2(1));
+    printf("is_power2(%d) = %d\n", 7, is_power2(7));
+    printf("is_power2(%d) = %d\n", 8, is_power2(8));
     return 0;
 }
-
