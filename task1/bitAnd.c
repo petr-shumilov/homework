@@ -8,7 +8,7 @@ int bit_and(int a, int b)
 int main()
 {
     int a, b;
-    scanf("%d %d", &a, &b);
+    scanf("%d%d", &a, &b);
     printf("%d", bit_and(a, b));
     return 0;
 }
