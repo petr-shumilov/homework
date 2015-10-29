@@ -1,10 +1,25 @@
 #include <stdio.h>
 
+const int _SIZE = 23;
+
 union float_int
 {
     int _int;
     float _float;
 };
+
+void print_M(int a)
+{
+    int i;
+    char res[_SIZE];
+    for (i = 0; i < _SIZE; ++i)
+    {
+        res[i] = '0' + (a & 1);
+        a >>= 1;
+    }
+    for (i = _SIZE - 1; i >= 0; i--)
+        printf("%c", res[i]);
+}
 
 void float_bits(float a)
 {
@@ -29,7 +44,9 @@ void float_bits(float a)
         }
         return;
     }
-    printf("(-1)^%d * 1.%d * 2^(%d - 127)", S, M, E);
+    printf("(-1)^%d * 1.", S);
+    print_M(M);
+    printf(" * 2^(%d - 127)", E);
 }
 
 int main()
