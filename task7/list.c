@@ -56,9 +56,17 @@ void rm(Node *root, int val)
     tmp->next = tmp2->next;
 }
 
+void free_mem(Node *root)
+{
+    if (!root)
+        return;
+    free(root);
+    free_mem(root->next);
+}
+
 void quit(Node *root)
 {
-    free(root);
+    free_mem(root);
     exit(0);
     return;
 }
