@@ -10,8 +10,10 @@ typedef struct node
 
 void print(Node *root, int cnt)
 {
+    if (!root)
+        return;
     printf("%d ", root->val);
-    if (cnt <= 10 && root)
+    if (cnt <= 10)
         cnt++, print(root->next, cnt);
 }
 
@@ -50,9 +52,10 @@ int main()
     tmp1->next = tmp2;
     tmp1->val = 1;
 
-    //root->next = tmp1;
-    root = NULL;
-
+    
+    root->next = tmp1;
+    //root = NULL;
+    
     printf("%d", find_cycle(tmp1));
     return 0;
 }
