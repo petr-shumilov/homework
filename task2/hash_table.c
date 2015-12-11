@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
 
-const int SIZE = 411;
+const int SIZE = 10613;
 
 typedef struct list
 {
@@ -71,10 +69,26 @@ void debug(hash_table *ht)
     printf("---DEBUG---\n");
 }
 
+void print(hash_table *ht)
+{
+    int i;
+    for (i = 0; i < ht->size; ++i)
+    {
+        list *item = ht->chain[i];
+        if (item == NULL)
+            continue;
+        while (item != NULL)
+        {
+            printf("['%s'] = %d\n", item->key, item->value);
+            item = item->next;
+        }
+    }
+}
+
 list *make_node(char *key, int value)
 {
     list *node = malloc(sizeof(list));
-    node->key = strdup(key);
+    node->key = strdup(key); //real sh*t
     node->value = value;
     node->next = NULL;
     return node;
@@ -82,7 +96,7 @@ list *make_node(char *key, int value)
 
 void set(hash_table *ht, char *key, int value)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash], *last = NULL;
     while (node != NULL)
     {
@@ -103,7 +117,7 @@ void set(hash_table *ht, char *key, int value)
 
 int get(hash_table *ht, char *key)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash];
 
     while (node != NULL)
@@ -117,7 +131,7 @@ int get(hash_table *ht, char *key)
 
 void del(hash_table *ht, char *key)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash], *last = NULL;
 
     while (node != NULL)
@@ -136,45 +150,13 @@ void del(hash_table *ht, char *key)
     }
 }
 
-void show_stats(hash_table *ht)
-{
-    int occup = 0, mn = SIZE, mx = -1, cnt = 0;
-    double average = 0.0;
-    int i;
-    for (i = 0; i < ht->size; ++i)
-    {
-        list *node = ht->chain[i];
-        if (node == NULL)
-            continue; 
-        occup++;
-        int cur = 0;
-        while (node != NULL)
-        {
-            cnt++;
-            cur++;
-            node = node->next;
-        }
-        mn = MIN(mn, cur);
-        mx = MAX(mx, cur);
-        average += cur;
-    }
-    average = average / (float)occup;
-    printf("----statistic----\n");
-    printf("min chain len: %d\n", mn);
-    printf("max chain len: %d\n", mx);
-    printf("total elems: %d\n", cnt);
-    printf("occupied chains: %d\n", occup);
-    printf("average chain: %.1f\n", average);
-    printf("----statistic----\n");
-}
-
-int test_hash_func(char *s)
+int hash(char *s)
 {
     const int P = 239; 
     long long hash = 0;
     while (*s)
     {
-        hash = hash * P + *s;
+        hash =(hash * P + *s) % SIZE;
         s++;
     }
     return hash % SIZE;
@@ -182,21 +164,20 @@ int test_hash_func(char *s)
 
 int main()
 {
-    hash_table *ht = create_table(test_hash_func, SIZE);
-
-    set(ht, "1jz-ge", 200);
-    set(ht, "2jz-ge", 220);
-    set(ht, "1jz-gte", 280);
-    set(ht, "2jz-gte", 280);
-    set(ht, "3zz-fe", 110);
-    debug(ht);
-    del(ht, "2jz-ge");
-    debug(ht);
-    set(ht, "4a-ge", 125);
-    debug(ht);
-    printf("HoursePower of Toyota 3zz-fe engine: %d\n", get(ht, "3zz-fe"));
-
-    show_stats(ht);
-    delete_table(ht);
+    hash_table *ht = create_table(hash, SIZE);
+    while (1)
+    {
+        char cur[255];
+        scanf("%s", cur);
+        if (!strcmp(cur, "exit"))
+            break;
+        int pos = get(ht, cur);
+        if (pos == -1)
+            set(ht, cur, 1);
+        else
+            set(ht, cur, pos + 1);
+    }
+    print(ht);
     return 0;
 }
+
