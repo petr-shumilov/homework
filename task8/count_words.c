@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
-const int SIZE = 411;
+const int SIZE = 10613;
 
 typedef struct list
 {
@@ -74,7 +75,7 @@ void debug(hash_table *ht)
 list *make_node(char *key, int value)
 {
     list *node = malloc(sizeof(list));
-    node->key = strdup(key);
+    node->key = strdup(key); //real sh*t
     node->value = value;
     node->next = NULL;
     return node;
@@ -82,7 +83,7 @@ list *make_node(char *key, int value)
 
 void set(hash_table *ht, char *key, int value)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash], *last = NULL;
     while (node != NULL)
     {
@@ -103,7 +104,7 @@ void set(hash_table *ht, char *key, int value)
 
 int get(hash_table *ht, char *key)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash];
 
     while (node != NULL)
@@ -117,7 +118,7 @@ int get(hash_table *ht, char *key)
 
 void del(hash_table *ht, char *key)
 {
-    long long hash = ht->hash_func(key);
+    int hash = ht->hash_func(key);
     list *node = ht->chain[hash], *last = NULL;
 
     while (node != NULL)
@@ -168,35 +169,89 @@ void show_stats(hash_table *ht)
     printf("----statistic----\n");
 }
 
-int test_hash_func(char *s)
+int hash1(char *s)
 {
     const int P = 239; 
     long long hash = 0;
     while (*s)
     {
-        hash = hash * P + *s;
+        hash =(hash * P + *s) % SIZE;
         s++;
     }
     return hash % SIZE;
 }
 
+int hash2(char *s)
+{
+    return 239;
+}
+
+int hash3(char *s)
+{
+    int i, hash = 0;
+    for (i = 0; i < strlen(s); i++)
+        hash += s[i];
+    return hash % SIZE;
+}
+
+
 int main()
 {
-    hash_table *ht = create_table(test_hash_func, SIZE);
-
-    set(ht, "1jz-ge", 200);
-    set(ht, "2jz-ge", 220);
-    set(ht, "1jz-gte", 280);
-    set(ht, "2jz-gte", 280);
-    set(ht, "3zz-fe", 110);
-    debug(ht);
-    del(ht, "2jz-ge");
-    debug(ht);
-    set(ht, "4a-ge", 125);
-    debug(ht);
-    printf("HoursePower of Toyota 3zz-fe engine: %d\n", get(ht, "3zz-fe"));
-
-    show_stats(ht);
-    delete_table(ht);
+    FILE *in = fopen("input.txt", "r");
+    freopen("statistic.txt", "w", stdout);
+    printf("SIZE OF HASHTABLE: %d\n", SIZE);
+    char s[256];
+    
+    time_t start = clock();
+    hash_table *ht1 = create_table(hash1, SIZE);
+    while (fscanf(in, "%s", s) == 1)
+    {
+        if (get(ht1, s) == -1)
+            set(ht1, s, 0);
+        else
+        {
+            int tmp = get(ht1, s);
+            set(ht1, s, tmp++);
+        }
+    }
+    printf("Time of stable hash: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
+    show_stats(ht1);
+    delete_table(ht1);
+    printf("\n\n");
+    
+    start = clock();
+    hash_table *ht2 = create_table(hash2, SIZE);
+    fseek(in, 0, SEEK_SET);
+    while (fscanf(in, "%s", s) == 1)
+    {
+        if (get(ht2, s) == -1)
+            set(ht2, s, 0);
+        else
+        {
+            int tmp = get(ht2, s);
+            set(ht2, s, tmp++);
+        }
+    }
+    printf("Time of hash when using constant: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
+    show_stats(ht2);
+    delete_table(ht2);
+    printf("\n\n");
+    
+    start = clock();
+    hash_table *ht3 = create_table(hash3, SIZE);
+    fseek(in, 0, SEEK_SET);
+    while (fscanf(in, "%s", s) == 1)
+    {
+        if (get(ht3, s) == -1)
+            set(ht3, s, 0);
+        else
+        {
+            int tmp = get(ht3, s);
+            set(ht3, s, tmp++);
+        }
+    }
+    printf("Time of hashing by sums: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
+    show_stats(ht3);
+    delete_table(ht3);
     return 0;
 }

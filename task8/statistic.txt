@@ -1,0 +1,29 @@
+SIZE OF HASHTABLE: 10613
+Time of stable hash: 0.110000 sec.
+----statistic----
+min chain len: 1
+max chain len: 13
+total elems: 28020
+occupied chains: 9880
+average chain: 2.8
+----statistic----
+
+
+Time of hash when using constant: 51.090000 sec.
+----statistic----
+min chain len: 10613
+max chain len: 28020
+total elems: 28020
+occupied chains: 1
+average chain: 28020.0
+----statistic----
+
+
+Time of hashing by sums: 0.210000 sec.
+----statistic----
+min chain len: 1
+max chain len: 61
+total elems: 28020
+occupied chains: 1664
+average chain: 16.8
+----statistic----
