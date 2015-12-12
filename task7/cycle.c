@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node
+typedef struct Node Node;
+
+struct Node
 {
     int val;
-    struct node *next;
-} Node;
-
+    Node *next;
+};
 
 void print(Node *root, int cnt)
 {
@@ -19,8 +20,8 @@ void print(Node *root, int cnt)
 
 int find_cycle(Node *root)
 {
-    Node *fast = root;
-    Node *slow = root;
+    Node *fast, *slow;
+    fast = slow = root;
     int delay = 0;
     while (1)
     {
@@ -33,29 +34,32 @@ int find_cycle(Node *root)
         if (fast == slow)
             return 1;
     }
-
 }
 
 int main()
 {
     Node *root = malloc(sizeof(Node));
+    Node *node1 = malloc(sizeof(Node));
+    Node *node2 = malloc(sizeof(Node));
+    Node *node3 = malloc(sizeof(Node));
 
-    Node *tmp3 = malloc(sizeof(Node));
-    tmp3->next = root;
-    tmp3->val = 3;
+    root->next = node1;
 
-    Node *tmp2 = malloc(sizeof(Node));
-    tmp2->next = tmp3;
-    tmp2->val = 2;
+    node1->val = 1;
+    node1->next = node2;
 
-    Node *tmp1 = malloc(sizeof(Node));
-    tmp1->next = tmp2;
-    tmp1->val = 1;
+    node2->val = 2;
+    node2->next = node3;
+    
+    node3->val = 3;
 
     
-    root->next = tmp1;
-    //root = NULL;
+    node3->next = node2;
+    //if you want have cycle, comment out next line
+    //node3->next = NULL;
     
-    printf("%d", find_cycle(tmp1));
+    
+    print(root, 0);
+    printf("\nHave cycle: %d", find_cycle(root));
     return 0;
 }

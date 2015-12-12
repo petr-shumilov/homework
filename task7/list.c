@@ -1,67 +1,61 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node
+typedef struct Node Node;
+
+struct Node
 {
     int val;
-    struct node *next;
-} Node;
+    Node *next;
+};
 
-void add(Node **root, int val)
+void add(Node **root, Node **last, int val)
 {
-    Node *tmp = malloc(sizeof(Node));
-    tmp->val = val;
-    tmp->next = *root;
-    *root = tmp;
+    Node *new = malloc(sizeof(Node)); 
+    new->val = val;
+    new->next = NULL;
+    (*last)->next = new;
+    *last = new; 
+}
+
+void rm(Node *root, Node **last, int val)
+{
+    Node *prev = root, *cur = root->next;
+    while (cur && cur->val != val)
+    {
+        prev = cur;
+        cur = cur->next;
+    }
+    if (cur && cur->val == val)
+    {
+        if (cur == *last)
+            *last = prev;
+        prev->next = cur->next;
+    }
 }
 
 void print(Node *root)
 {
-    if (!root)
-        return;
-    printf("%d ", root->val);
-    print(root->next);
-}
-
-
-Node* get_Nth(Node *root, int n)
-{
-    int cnt = 0;
-    while (cnt < n && root)
+    Node *item = root->next;
+    if (item == NULL)
+        printf("NULL\n");
+    else
     {
-        root = root->next;
-        cnt++;
-    }
-    return root;
-}
-
-int find(Node *root, int val)
-{
-    int pos = 0;
-    while (root->val != val && root)
-    {
-        root = root->next;
-        pos++;
-    }
-    return pos;
-}
-
-void rm(Node *root, int val)
-{
-    int n = find(root, val);
-    if (!n)
-        return;
-    Node *tmp = get_Nth(root, n - 1);
-    Node *tmp2 = tmp->next;
-    tmp->next = tmp2->next;
+        while (item)
+        {
+            printf("%d->", item->val);
+            item = item->next;
+        }
+        printf("NULL\n");
+     }       
 }
 
 void free_mem(Node *root)
 {
     if (!root)
         return;
-    free(root);
     free_mem(root->next);
+    free(root);
 }
 
 void quit(Node *root)
@@ -73,7 +67,8 @@ void quit(Node *root)
 
 int main()
 {
-    Node *root = NULL;
+    Node *root = malloc(sizeof(Node)), *last = malloc(sizeof(Node));
+    last = root;
     while(1)
     {
         char command;
@@ -83,11 +78,11 @@ int main()
         {
             case 'a':
                 scanf("%d", &tmp);
-                add(&root, tmp);
+                add(&root, &last, tmp);
             break;
             case 'r':
                 scanf("%d", &tmp);
-                rm(root, tmp);
+                rm(root, &last, tmp);
             break;
             case 'p':
                 print(root);
