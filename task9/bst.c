@@ -25,6 +25,11 @@ void insert(Node **Tree, int value)
     if (*Tree == NULL)
     {
         Node *tmp = (Node*)malloc(sizeof(Node));
+        if (tmp == NULL)
+        {
+            printf("ERROR: couldn't allocate memory");
+            exit(1);
+        }
         tmp->value = value;
         tmp->left = tmp->right = NULL;
         *Tree = tmp;
