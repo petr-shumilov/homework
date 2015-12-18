@@ -7,26 +7,39 @@
 
 const int SIZE = 10613;
 
-typedef struct list
+typedef struct list list;
+typedef struct hash_table hash_table;
+
+struct list
 {
     char *key;
     int value;
-    struct list *next; 
-} list;
+    list *next; 
+};
 
-typedef struct hash_table
+struct hash_table
 {
     int size;
     list **chain;
     int (*hash_func)(char*); 
-} hash_table;
+};
 
 
 hash_table* create_table(int (*hash_func)(char*), int size)
 {
     hash_table *ht = malloc(sizeof(hash_table));
+    if (ht == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    }
     ht->size = size;
     ht->chain = malloc(sizeof(list*) * size);
+    if (ht->chain == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    }
     ht->hash_func = hash_func;
     int i;
     for (i = 0; i < size; ++i)
@@ -75,6 +88,11 @@ void debug(hash_table *ht)
 list *make_node(char *key, int value)
 {
     list *node = malloc(sizeof(list));
+    if (node == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    }
     node->key = strdup(key); //real sh*t
     node->value = value;
     node->next = NULL;
@@ -159,7 +177,7 @@ void show_stats(hash_table *ht)
         mx = MAX(mx, cur);
         average += cur;
     }
-    average = average / (float)occup;
+    average = average / (double)occup;
     printf("----statistic----\n");
     printf("min chain len: %d\n", mn);
     printf("max chain len: %d\n", mx);
@@ -211,13 +229,15 @@ int main()
         else
         {
             int tmp = get(ht1, s);
-            set(ht1, s, tmp++);
+            set(ht1, s, ++tmp);
         }
     }
     printf("Time of stable hash: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
     show_stats(ht1);
+    //debug(ht1);
     delete_table(ht1);
     printf("\n\n");
+    fflush(stdout); 
     
     start = clock();
     hash_table *ht2 = create_table(hash2, SIZE);
@@ -229,13 +249,14 @@ int main()
         else
         {
             int tmp = get(ht2, s);
-            set(ht2, s, tmp++);
+            set(ht2, s, ++tmp);
         }
     }
     printf("Time of hash when using constant: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
     show_stats(ht2);
     delete_table(ht2);
     printf("\n\n");
+    fflush(stdout); 
     
     start = clock();
     hash_table *ht3 = create_table(hash3, SIZE);
@@ -247,7 +268,7 @@ int main()
         else
         {
             int tmp = get(ht3, s);
-            set(ht3, s, tmp++);
+            set(ht3, s, ++tmp);
         }
     }
     printf("Time of hashing by sums: %f sec.\n", (clock() - start) / (double)CLOCKS_PER_SEC);
