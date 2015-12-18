@@ -16,6 +16,11 @@ inline void print(int *arr, int _size)
 void sort0(int *arr, int _size) // ~O(n)
 {
     int *count = (int*)malloc((MOD + 0) * sizeof(int));
+    if (count == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    }
     int i, j = 0;
     for (i = 0; i < _size; ++i)
         count[arr[i]]++;
@@ -33,7 +38,14 @@ void sort0(int *arr, int _size) // ~O(n)
 
 void sort1(int *arr, int _size)
 {
-    long i, j, lb, ub, starrckpos = 1, ppos, pivot, temp, lbstarrck[2048], ubstarrck[2048]; 
+    long i, j, lb, ub, starrckpos = 1, ppos, pivot, temp;
+    long *lbstarrck = (long*)malloc(sizeof(long) * 2048);
+    long *ubstarrck = (long*)malloc(sizeof(long) * 2048);
+    if (lbstarrck == NULL || ubstarrck == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    } 
     lbstarrck[1] = 0;
     ubstarrck[1] = _size - 1;
     do
@@ -120,6 +132,11 @@ int main()
         for (k = 0; k < 9; ++k)
         {
             int *a = (int*)malloc(N[k] * sizeof(int));
+            if (a == NULL)
+            {
+                printf("ERROR: couldn't allocate memory");
+                exit(1);
+            }
             srand(time(NULL));
             int i;
             for (i = 0; i < N[k]; ++i)
