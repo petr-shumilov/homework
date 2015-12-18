@@ -42,6 +42,11 @@ int main()
     Node *node1 = malloc(sizeof(Node));
     Node *node2 = malloc(sizeof(Node));
     Node *node3 = malloc(sizeof(Node));
+    if (root == NULL  || node1 == NULL || node2 == NULL || node3 == NULL)
+    {
+        printf("ERROR: couldn't allocate memory");
+        exit(1);
+    }
 
     root->next = node1;
 
