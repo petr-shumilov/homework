@@ -117,8 +117,12 @@ void sort2(int *arr, int _size) //O(n ^ 2)
 int main()
 {
 
-    freopen("benchmark.txt", "w+", stdout);
-
+    FILE *f =  freopen("benchmark.txt", "w+", stdout);
+    if (f == NULL)
+    {
+        printf("couldn't open file");
+	exit(1);
+    } 
     void (*sorting_func[3])(int *arr, int _size) = {sort0, sort1, sort2};
     char *header = "          |  5  | 10  | 100 | 1e3 | 1e4 | 1e5 | 1e6 | 1e7 | 1e8 |";
     char *li[3] = {"O(n)       ", "O(n log n) ", "O(n ^ 2)   " };
