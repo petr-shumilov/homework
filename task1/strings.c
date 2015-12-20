@@ -8,22 +8,28 @@ size_t strlen(const char *s)
     return len - 1;  
 }
 
-int strcmp(char *s1, char *s2)
+int strcmp1(char *s1, char *s2)
 {
     int i = 0;
-    while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
-        i++;
-    if (strlen(s1) == strlen(s2) && strlen(s2) == i)
-        return 0;
-    return (s1[i] < s2[i] ? -1 : 1);
+    while (s1[i] != '\0' || s2[i] != '\0')
+    {
+        if (s1[i] > s2[i])
+            return 1;
+        else if (s1[i] < s2[i])
+            return -1;
+        else
+            i++;
+    }
+    return 0;
 }
 
 
-void strcpy(char* s1, const char* s2)
+void strcpy(char *s1, const char *s2)
 {
-    int i = -1;
-    while (s2[++i] != '\0')
-        *s1 = s2[i], ++s1;
+    do
+    {
+        *s1++ = *s2;
+    } while (*s2++);
 }
 
 void strctt(char* s1, const char* s2)
@@ -41,10 +47,10 @@ void strctt(char* s1, const char* s2)
 
 int main()
 {
-    /*char a[] = "abc";
-    char b[] = "cde";
-    strctt(a, b);
-    printf("%s", a);
-    //printf("%d", strcmp1("asda", "asdab"));*/
+    //char a[] = "abc";
+    //char b[] = "cde";
+    //strcpy(a, b);
+    //printf("%s", a);
+    //printf("%d", strcmp1("ab", "b"));
     return 0;
 }
