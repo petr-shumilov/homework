@@ -2,21 +2,45 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SIZE 100
+
+void strrev(char *s)
+{
+    int i, len = strlen(s);
+    for (i = 0; i < len / 2; i++)
+    {
+        char tmp = s[len - i - 1];
+        s[len - i - 1] = s[i];
+        s[i] = tmp;
+    }
+}
+
 int main()
 {
-    char n1[100], n2[100];
-    memset(n1, '0', sizeof(char) * 100);
-    memset(n2, '0', sizeof(char) * 100);
-    n1[0] = n1[1] = n1[2] = 1;
-    n2[0] = n2[4] = n2[2] = 1;
-    int i = 0;
-    while (n1[i] == n2[i] && i < 100)
-        ++i;
-    if (n1[i] > n2[i])
-        printf("1");
-    else if (n1[i] < n2[i])
-        printf("-1");
-    else
-        printf("0");
+    char n1[SIZE] = "1010", n2[SIZE] = "101";
+    strrev(n1);
+    strrev(n2);
+    int i;
+    for (i = strlen(n1); i < SIZE; ++i)
+        n1[i] = '0';
+    for (i = strlen(n2); i < SIZE; ++i)
+        n2[i] = '0';
+    
+    i = SIZE - 1;
+    while (i > 0)
+    {
+        if (n1[i] > n2[i])
+        {
+            printf("1");
+            return 0;
+        }
+        else if (n1[i] < n2[i])
+        {
+            printf("-1");
+            return 0;
+        }
+        i--;
+    }
+    printf("0");
     return 0;
 }
