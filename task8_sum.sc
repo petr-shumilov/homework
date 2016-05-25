@@ -1,10 +1,11 @@
 def sum_of(lst : List[Int]) : Int = {
-  if (lst.isEmpty){
-    0
+  def loop(lst: List[Int], res: Int): Int = {
+    if (lst.isEmpty)
+      res
+    else
+      loop(lst.tail, res + lst.head)
   }
-  else{
-    lst.head + sum_of(lst.tail)
-  }
+  loop(lst, 0)
 }
-var a : List[Int] = List(1,2,3)
+val a : List[Int] = List(1,2, 3, 4)
 sum_of(a)

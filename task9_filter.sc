@@ -4,7 +4,7 @@ def list_filter[Type](lst: List[Type], filter: Type) : List[Type] = {
   }
   else {
     if (lst.head == filter){
-      List(filter) ++ list_filter(lst.tail, filter)
+      List.concat(List(filter), list_filter(lst.tail, filter))
     } else {
       list_filter(lst.tail, filter)
     }
