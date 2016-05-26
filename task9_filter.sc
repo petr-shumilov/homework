@@ -1,14 +1,17 @@
-def list_filter[Type](lst: List[Type], filter: Type) : List[Type] = {
-  if (lst.isEmpty){
+def list_filter_by[Type](lst: List[Type], func: Type => Boolean): List[Type] = {//10
+  if (lst.isEmpty)
     List()
-  }
   else {
-    if (lst.head == filter){
-      List.concat(List(filter), list_filter(lst.tail, filter))
-    } else {
-      list_filter(lst.tail, filter)
-    }
+    if (func(lst.head))
+      lst.head :: list_filter_by(lst.tail, func)
+    else
+      list_filter_by(lst.tail, func)
   }
 }
+
+def list_filter(list: List[Int]): List[Int] = {//9
+  list_filter_by(list, (x: Int) => x % 2 == 0)
+}
+
 var a : List[Int] = List(1,2,3,1,2,1)
-list_filter(a, 2)
+list_filter(a)

@@ -1,17 +1,17 @@
-def comp(x: Int) : Boolean = {
-  if ((x >= 0) && (x <= 5)) true else false
-}
-
-def list_filter_by[Type](lst: List[Type], filter : (Type) => Boolean): List[Type] = {
-  if (lst.isEmpty){
+def list_filter_by[Type](lst: List[Type], func: Type => Boolean): List[Type] = {//10
+  if (lst.isEmpty)
     List()
-  } else {
-    if (filter(lst.head)){
-      List.concat(List(lst.head), list_filter_by(lst.tail, filter))
-    } else {
-      list_filter_by(lst.tail, filter)
-    }
+  else {
+    if (func(lst.head))
+      lst.head :: list_filter_by(lst.tail, func)
+    else
+      list_filter_by(lst.tail, func)
   }
 }
-var a : List[Int] = List(1,6,3,-1,2,7)
-list_filter_by(a, comp)
+
+def list_filter(list: List[Int]): List[Int] = {//9
+  list_filter_by(list, (x: Int) => x % 2 == 0)
+}
+
+var a : List[Int] = List(1,2,3,1,2,1)
+list_filter(a)
