@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <title>WebSocket</title>
+    <script>
+        $(function(){
+            function wsStart() {
+                ws = new WebSocket("ws://localhost:8099/");
+                ws.onopen = function() { $("#console").append("<p>System: connection has been opened</p>"); };
+                ws.onclose = function() { $("#console").append("<p>System: connection closed, trying reconnecting...</p>");};// setTimeout(wsStart, 1000);};
+                ws.onmessage = function(evt) { $("#console").append("<p style = 'color: green;'>Server: "+evt.data+"</p>"); $('#console').scrollTop($('#console')[0].scrollHeight);};
+            }
+
+            wsStart();
+
+            $('#console').height($(window).height() - 80);
+
+            $('#input').focus();
+        });
+    </script>
+</head>
+
+<body>
+    <div id="console" style="overflow: auto;"><p>System: please wait, we are connecting to server...</p></div>
+    <div>
+        <form onsubmit="ws.send(JSON.stringify({status: 'ok', command : $('input').val()})); $('#console').append('<p>Client: ' + $('input').val() + '</p>'); $('input').val(''); return false; ">
+            <input id="input" type="text" class="form-control" placeholder="Text input" style="width: 100%;" maxlength="140" autocomplete="off">
+        </form>
+    </div>
+</body>
+</html>
