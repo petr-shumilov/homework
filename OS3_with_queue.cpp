@@ -91,7 +91,7 @@ void FIFO()
     }
 }
 
-void FILO()
+void LIFO()
 {
     while (!proc_queue.empty())
     {
@@ -109,7 +109,7 @@ int main()
 {
     init();
 
-    cout << "Choose:\n1)FIFO\n2)FILO\n";
+    cout << "Choose:\n1)FIFO\n2)LIFO\n";
 
     int strategy;
     cin >> strategy;
@@ -117,7 +117,7 @@ int main()
     if (strategy == 1)
         FIFO();
     else if (strategy == 2)
-        FILO();
+        LIFO();
         
     return 0;
 }
